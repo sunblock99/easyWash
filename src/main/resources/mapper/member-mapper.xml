@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nexg.easywash.mapper.MemberMapper">
+
+    <select id="selectUser" parameterType="String" resultType="com.nexg.easywash.dto.Member">
+        SELECT
+            MEM_NO AS memNo,
+            MEM_NIC AS nickname,
+            MEM_MAIL AS email,
+            MEM_BIRTH AS birth,
+            MEM_ADDR AS address,
+            MEM_LOGINDT AS loginDttm,
+            MEM_STAT AS status,
+            MEM_INSTDT AS createDttm,
+            CASE
+                WHEN MEM_TEL IS NULL THEN 'false'
+                ELSE 'true'
+                END AS isLoginInfo,
+            MEM_TEL AS telNo
+        FROM EW_MEMBER
+        WHERE MEM_MAIL = #{email}
+    </select>
+
+    <update id="updateLogindttm" parameterType="String">
+        UPDATE EW_MEMBER
+        SET MEM_LOGINDT = sysdate
+        WHERE MEM_MAIL = #{email}
+    </update>
+
+    <insert id="insertUser" parameterType="String">
+        INSERT INTO EW_MEMBER
+        (MEM_NO, MEM_MAIL, MEM_LOGINDT, MEM_INSTDT, MEM_STAT)
+        VALUES (seq_mem_no.NEXTVAL, #{email}, sysdate,sysdate, '1')
+    </insert>
+</mapper>
